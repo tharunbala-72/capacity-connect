@@ -1,0 +1,99 @@
+{
+  "user": { 
+    "id": "imd-demo-user", 
+    "name": "Tharun Bala (Met Officer Grade-II)", 
+    "station": "Regional Meteorological Centre, Chennai",
+    "activeRoleId": "junior-weather-forecaster", 
+    "unlockedSkillIds": ["synoptic-analysis"] 
+  },
+  "roles": [
+    { 
+      "id": "junior-weather-forecaster", 
+      "title": "Junior Weather Forecaster", 
+      "region": "RMC Chennai", 
+      "description": "Responsible for regional nowcasting, severe weather tracking, and synoptic chart interpretation.",
+      "requiredSkills": ["Synoptic Meteorology", "Doppler Radar Basics", "Operational Nowcasting"],
+      "requiredSkillIds": ["synoptic-analysis", "doppler-radar-basics", "nowcasting"] 
+    },
+    { 
+      "id": "doppler-radar-technician", 
+      "title": "Doppler Radar Technician", 
+      "region": "RMC New Delhi", 
+      "description": "Maintains DWR hardware, handles radar calibration, and ensures high data quality control.",
+      "requiredSkills": ["Doppler Radar Basics", "Radar Calibration", "Data Quality Control"],
+      "requiredSkillIds": ["doppler-radar-basics", "radar-calibration", "data-quality-control"] 
+    },
+    { 
+      "id": "climate-data-analyst", 
+      "title": "Climate Data Analyst", 
+      "region": "All India", 
+      "description": "Performs long-term climate statistics, quality control, and runs numerical climate models.",
+      "requiredSkills": ["Climate Statistics", "Data Quality Control", "Climate Modelling"],
+      "requiredSkillIds": ["climate-statistics", "data-quality-control", "climate-modelling"] 
+    },
+    { 
+      "id": "hydrologist", 
+      "title": "Hydrologist", 
+      "region": "All India", 
+      "description": "Specializes in hydrological modeling, flash flood forecasting, and precipitation analytics.",
+      "requiredSkills": ["Hydrological Modelling", "Flood Forecasting", "Data Quality Control"],
+      "requiredSkillIds": ["hydrological-modelling", "flood-forecasting", "data-quality-control"] 
+    }
+  ],
+  "skills": [
+    { "id": "synoptic-analysis", "name": "Synoptic Meteorology" }, 
+    { "id": "doppler-radar-basics", "name": "Doppler Radar Basics" }, 
+    { "id": "nowcasting", "name": "Operational Nowcasting" }, 
+    { "id": "radar-calibration", "name": "Radar Calibration" }, 
+    { "id": "data-quality-control", "name": "Data Quality Control" }, 
+    { "id": "climate-statistics", "name": "Climate Statistics" }, 
+    { "id": "climate-modelling", "name": "Climate Modelling" }, 
+    { "id": "hydrological-modelling", "name": "Hydrological Modelling" }, 
+    { "id": "flood-forecasting", "name": "Flood Forecasting" }
+  ],
+  "courses": [
+    { 
+      "id": "course-doppler-radar-basics", 
+      "title": "Doppler Radar Fundamentals", 
+      "skill": "Doppler Radar Basics",
+      "skillId": "doppler-radar-basics", 
+      "duration": "4 Weeks",
+      "questions": [
+        { "id": "q-radar-1", "prompt": "What does Doppler radar primarily measure?", "options": ["Cloud colour", "Radial velocity", "Soil moisture", "Surface pressure"], "answer": 1 },
+        { "id": "q-radar-2", "prompt": "Which product is useful for identifying precipitation intensity?", "options": ["Reflectivity", "Humidity sounding", "Sea-surface temperature", "Isobar map"], "answer": 0 },
+        { "id": "q-radar-3", "prompt": "A radar's maximum unambiguous velocity is constrained by its?", "options": ["Pulse repetition frequency", "Antenna paint", "Station latitude", "Display size"], "answer": 0 }
+      ] 
+    },
+    { 
+      "id": "course-nowcasting", 
+      "title": "Operational Nowcasting", 
+      "skill": "Operational Nowcasting",
+      "skillId": "nowcasting", 
+      "duration": "3 Weeks",
+      "questions": [
+        { "id": "q-nowcast-1", "prompt": "Nowcasting generally focuses on which forecast range?", "options": ["0–6 hours", "1–2 weeks", "1–3 months", "More than a year"], "answer": 0 },
+        { "id": "q-nowcast-2", "prompt": "Which observation is most valuable for tracking a fast-moving thunderstorm?", "options": ["Weather radar", "Annual climate normal", "Ocean salinity chart", "Historical almanac"], "answer": 0 },
+        { "id": "q-nowcast-3", "prompt": "What should a nowcast communicate clearly?", "options": ["Location, timing and impact", "Only station elevation", "Only annual rainfall", "Only model version"], "answer": 0 }
+      ] 
+    }
+  ],
+  "analytics": {
+    "All India": { "trained": 318, "inProgress": 96, "skillCoverage": 74 },
+    "RMC Chennai": { "trained": 82, "inProgress": 21, "skillCoverage": 78 },
+    "RMC New Delhi": { "trained": 76, "inProgress": 28, "skillCoverage": 71 }
+  },
+  "adminAnalytics": {
+    "departmentSkillGaps": [
+      { "department": "Cyclone Warning", "acquired": 85, "gap": 15 },
+      { "department": "Radar (DWR)", "acquired": 72, "gap": 28 },
+      { "department": "Agromet", "acquired": 90, "gap": 10 },
+      { "department": "Hydromet", "acquired": 65, "gap": 35 },
+      { "department": "Numerical Modeling", "acquired": 78, "gap": 22 }
+    ],
+    "completionStatus": [
+      { "name": "Certified & Completed", "value": 70, "color": "#10b981" },
+      { "name": "In Progress", "value": 22, "color": "#0284c7" },
+      { "name": "Pending Assessment", "value": 8, "color": "#f59e0b" }
+    ]
+  }
+}
