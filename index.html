@@ -1,0 +1,172 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101010">
+    <title>Capacity Connect - IMD Training Portal</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+<header class="topbar">
+    <a class="brand" href="#">
+        <span class="brand-logo">CC</span>
+        <span class="brand-text">
+            <strong>CAPACITY CONNECT</strong>
+            <small>IMD TRAINING PORTAL</small>
+        </span>
+    </a>
+
+    <button id="themeToggle" class="theme-toggle" type="button">
+        ☼ Light Mode
+    </button>
+</header>
+
+<main class="container">
+
+    <section class="hero">
+        <p class="eyebrow">ROLE ONBOARDING · 01</p>
+
+        <h1>
+            Discover your role.<br>
+            <span>Build your capacity.</span>
+        </h1>
+
+        <p class="hero-text">
+            Explore career pathways across meteorology, climate intelligence,
+            disaster preparedness and operational excellence. Choose a role
+            to discover its responsibilities, skills and learning pathway.
+        </p>
+
+        <div class="gold-line"></div>
+    </section>
+
+    <section id="rolesSection" class="roles-section">
+        <div class="section-heading">
+            <div>
+                <h2>Choose Your Training Role</h2>
+                <p>Select or unselect a role at any time.</p>
+            </div>
+
+            <div class="selection-counter" aria-live="polite">
+                Selected: <strong id="selectedCount">0</strong> / 1
+            </div>
+        </div>
+
+        <div id="roleGrid" class="role-grid"></div>
+
+        <div class="continue-area">
+            <div>
+                <strong id="selectionMessage">No role selected</strong>
+                <p>Select a role to access its dedicated profile.</p>
+            </div>
+
+            <button id="continueBtn" class="primary-btn" disabled>
+                Continue <span>→</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Dedicated job profile, separate from the role cards -->
+    <section id="detailsPanel" class="details-panel" hidden
+             aria-live="polite" tabindex="-1">
+
+        <div class="profile-hero">
+            <div class="profile-topline">
+                <span class="profile-label">CAPACITY CONNECT / ROLE PROFILE</span>
+                <span class="profile-status">● SELECTED ROLE</span>
+            </div>
+
+            <div class="profile-title-row">
+                <div>
+                    <p class="eyebrow">YOUR TRAINING PATHWAY</p>
+                    <h2 id="detailTitle">Job title</h2>
+                    <p id="detailSummary" class="profile-summary"></p>
+                </div>
+
+                <div id="detailIcon" class="profile-emblem">01</div>
+            </div>
+
+            <div class="profile-meta">
+                <div>
+                    <span>ROLE CATEGORY</span>
+                    <strong id="detailCategory"></strong>
+                </div>
+                <div>
+                    <span>PRIMARY FOCUS</span>
+                    <strong id="detailFocus"></strong>
+                </div>
+                <div>
+                    <span>LEARNING PATH</span>
+                    <strong id="detailLearning"></strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-body">
+            <div class="profile-main">
+                <article class="profile-card">
+                    <span class="card-index">01 / OVERVIEW</span>
+                    <h3>About this role</h3>
+                    <p id="detailOverview"></p>
+                </article>
+
+                <article class="profile-card">
+                    <span class="card-index">02 / RESPONSIBILITIES</span>
+                    <h3>What you will work on</h3>
+                    <ul id="detailResponsibilities" class="responsibility-list"></ul>
+                </article>
+
+                <article class="profile-card">
+                    <span class="card-index">03 / COMPETENCIES</span>
+                    <h3>Skills to develop</h3>
+                    <div id="detailSkills" class="skill-tags"></div>
+                </article>
+            </div>
+
+            <aside class="profile-sidebar">
+                <article class="profile-card">
+                    <span class="card-index">04 / TOOLKIT</span>
+                    <h3>Tools and knowledge</h3>
+                    <p id="detailTools"></p>
+                </article>
+
+                <article class="profile-card">
+                    <span class="card-index">05 / GET STARTED</span>
+                    <h3>Recommended preparation</h3>
+                    <p id="detailPreparation"></p>
+                </article>
+
+                <div class="profile-note">
+                    <span>✦</span>
+                    <p>
+                        Develop your skills through practice, collaboration
+                        and continuous learning.
+                    </p>
+                </div>
+            </aside>
+        </div>
+
+        <div class="profile-footer">
+            <button id="backBtn" class="secondary-btn">
+                ← Back to roles
+            </button>
+            <button id="changeRoleBtn" class="primary-btn">
+                Change role →
+            </button>
+        </div>
+    </section>
+
+</main>
+
+
+<footer class="footer">
+    <span>CAPACITY CONNECT</span>
+    <span>IMD TRAINING PORTAL · ROLE ONBOARDING</span>
+</footer>
+
+</body>
+</html>
