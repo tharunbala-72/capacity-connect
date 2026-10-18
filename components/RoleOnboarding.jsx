@@ -1,10 +1,13 @@
-export default function RoleOnboarding({ roles, selectedRole, onSelectRole }) {
-    return (
-      <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-xl text-center">
-        <h3 className="text-lg font-bold text-slate-200">Module 1: Role Onboarding</h3>
-        <p className="text-xs text-slate-400 mt-1">
-          (Sanjana&apos;s component placeholder — waiting for teammate code submission)
-        </p>
-      </div>
-    );
-  }
+"use client";
+
+import { useState } from "react";
+import { ArrowRight, Check, ChevronRight, Radar, X } from "lucide-react";
+import { SpotlightCard } from "./ReactBits";
+
+const profileSections = [["01 / OVERVIEW", "A role-specific learning path aligned to IMD operational preparedness."], ["02 / RESPONSIBILITIES", "Issue timely, evidence-led weather intelligence and maintain operational continuity."], ["03 / COMPETENCIES", "Build the mandatory domain, data quality, and decision-support skills for this designation."], ["04 / TOOLKIT", "IMD operational dashboards, DWR products, synoptic charts, and institutional knowledge archives."]];
+
+export default function RoleOnboarding({ roles, selectedRole, onSelectRole, isLoading }) {
+  const [inspectedRole, setInspectedRole] = useState(null);
+  const activeRole = inspectedRole || selectedRole;
+  return <section className="space-y-6"><div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p className="text-xs font-bold tracking-[0.18em] text-amber-400">ROLE ONBOARDING • 01</p><h2 className="mt-2 text-2xl font-bold text-white">Discover your role. Build your capacity.</h2></div><p className="max-w-sm text-sm text-zinc-400">Select an official IMD designation to update the active competency pathway.</p></div><div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{roles.map((role) => <SpotlightCard key={role.id} className={`rounded-2xl border bg-zinc-950 ${selectedRole?.id === role.id ? "border-amber-400" : "border-zinc-800"}`}><div className="flex min-h-56 flex-col p-5"><Radar className="h-6 w-6 text-amber-400" /><p className="mt-5 text-lg font-semibold text-white">{role.title}</p><p className="mt-2 text-xs leading-5 text-zinc-400">{role.description}</p><p className="mt-auto pt-4 text-xs font-medium text-amber-300">{role.region}</p><div className="mt-4 flex gap-2"><button onClick={() => setInspectedRole(role)} className="flex-1 rounded-lg border border-zinc-700 px-3 py-2 text-xs font-semibold text-zinc-200 hover:border-amber-400">Inspect</button><button disabled={isLoading} onClick={() => onSelectRole(role)} className="rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-zinc-950 hover:bg-amber-300 disabled:opacity-50">{selectedRole?.id === role.id ? <Check className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />}</button></div></div></SpotlightCard>)}</div>{inspectedRole && <div className="fixed inset-0 z-[60] bg-black/70 p-4 backdrop-blur-sm"><aside className="ml-auto flex h-full max-w-xl flex-col overflow-y-auto rounded-2xl border border-amber-400/30 bg-zinc-950 p-6 shadow-2xl"><div className="flex items-start justify-between"><div><p className="text-xs font-bold tracking-[0.18em] text-amber-400">ROLE PROFILE</p><h3 className="mt-2 text-2xl font-bold text-white">{activeRole.title}</h3></div><button onClick={() => setInspectedRole(null)} className="rounded-lg p-2 text-zinc-400 hover:bg-zinc-800"><X /></button></div><div className="mt-7 space-y-5">{profileSections.map(([heading, copy]) => <div key={heading} className="border-b border-zinc-800 pb-5"><p className="text-xs font-bold text-amber-400">{heading}</p><p className="mt-2 text-sm leading-6 text-zinc-300">{copy}</p>{heading.startsWith("03") && <div className="mt-3 flex flex-wrap gap-2">{activeRole.requiredSkills.map((skill) => <span key={skill} className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-xs text-amber-200">{skill}</span>)}</div>}</div>)}</div><button onClick={() => { onSelectRole(activeRole); setInspectedRole(null); }} className="mt-auto flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-4 py-3 text-sm font-bold text-zinc-950 hover:bg-amber-300">05 / GET STARTED <ChevronRight className="h-4 w-4" /></button></aside></div>}</section>;
+}

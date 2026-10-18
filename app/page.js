@@ -1,234 +1,47 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import seedData from "@/data/seedData.json";
+
+import { useEffect, useState } from "react";
+import { BarChart3, BookOpen, GraduationCap, Moon, ShieldCheck, Sun, Users } from "lucide-react";
 import RoleOnboarding from "@/components/RoleOnboarding";
 import CourseAndQuiz from "@/components/CourseAndQuiz";
-import SkillGapDashboard from "@/components/SkillGapDashboard";
 import AdminAnalytics from "@/components/AdminAnalytics";
-import { 
-  CloudLightning, 
-  ShieldCheck, 
-  LayoutDashboard, 
-  BarChart2, 
-  Sparkles, 
-  CheckCircle2, 
-  BookOpen, 
-  Award,
-  Layers,
-  ArrowRight
-} from "lucide-react";
+import { CountUp, SpotlightCard } from "@/components/ReactBits";
+
+const accessRoles = [
+  { id: "trainee", title: "Trainee / Meteorological Officer", detail: "Learner LMS view", icon: BookOpen },
+  { id: "trainer", title: "Trainer & SME Mentor", detail: "Matching and institutional archive", icon: GraduationCap },
+  { id: "director", title: "Training Director / RMC Head", detail: "Director analytics and CSV reports", icon: BarChart3 },
+];
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState("learner");
-  const [serverState, setServerState] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  // Fetch initial state from Backend API (/api/competency)
-  const fetchCompetencyState = async () => {
-    try {
-      const res = await fetch("/api/competency");
-      const data = await res.json();
-      if (data.status === "success") {
-        setServerState(data);
-      }
-    } catch (error) {
-      console.error("Error fetching competency API:", error);
-    }
-  };
+  const [accessRole, setAccessRole] = useState(null);
+  const [darkMode, setDarkMode] = useState(true);
+  const [profile, setProfile] = useState(null);
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchCompetencyState();
+    async function loadPortal() {
+      try {
+        const [competencyResponse, assessmentResponse] = await Promise.all([fetch("/api/competency"), fetch("/api/assessment")]);
+        if (!competencyResponse.ok || !assessmentResponse.ok) throw new Error("The portal data could not be loaded.");
+        const [competency, assessment] = await Promise.all([competencyResponse.json(), assessmentResponse.json()]);
+        setProfile(competency); setCourses(assessment.courses);
+      } catch (requestError) { setError(requestError.message); }
+    }
+    loadPortal();
   }, []);
 
-  const handleSelectRole = async (roleObj) => {
-    setIsLoading(true);
-    try {
-      const res = await fetch("/api/competency", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "SWITCH_ROLE", roleId: roleObj.id }),
-      });
-      const data = await res.json();
-      if (data.status === "success") setServerState(data);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  async function updateCompetency(body) {
+    setLoading(true); setError("");
+    try { const response = await fetch("/api/competency", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }); const payload = await response.json(); if (!response.ok) throw new Error(payload.error || "Unable to update competency."); setProfile(payload); } catch (requestError) { setError(requestError.message); } finally { setLoading(false); }
+  }
 
-  const handleUnlockSkill = async (skillName) => {
-    setIsLoading(true);
-    try {
-      const res = await fetch("/api/competency", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "UNLOCK_SKILL", skillName }),
-      });
-      const data = await res.json();
-      if (data.status === "success") setServerState(data);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const isDark = darkMode ? "bg-zinc-950 text-zinc-100" : "bg-amber-50 text-zinc-950";
+  if (!accessRole) return <main className="grid min-h-screen place-items-center bg-zinc-950 p-5 text-white"><section className="w-full max-w-5xl"><div className="mb-10 text-center"><div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-400 text-zinc-950"><ShieldCheck /></div><p className="mt-5 text-xs font-bold tracking-[0.2em] text-amber-400">IMD • MOES • SIH26075</p><h1 className="mt-3 text-4xl font-bold">Capacity Connect</h1><p className="mt-3 text-zinc-400">Select your operational access view.</p></div><div className="grid gap-5 md:grid-cols-3">{accessRoles.map((role) => { const Icon = role.icon; return <SpotlightCard key={role.id} className="rounded-2xl border border-zinc-800 bg-zinc-900"><button onClick={() => setAccessRole(role)} className="w-full p-6 text-left"><Icon className="h-7 w-7 text-amber-400" /><h2 className="mt-8 text-xl font-semibold">{role.title}</h2><p className="mt-2 text-sm text-zinc-400">{role.detail}</p><span className="mt-6 block text-xs font-bold text-amber-300">1-CLICK LOGIN →</span></button></SpotlightCard>; })}</div></section></main>;
 
-  const handleResetDemo = async () => {
-    setIsLoading(true);
-    try {
-      const res = await fetch("/api/competency", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "RESET_DEMO" }),
-      });
-      const data = await res.json();
-      if (data.status === "success") setServerState(data);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const currentRole = serverState?.currentRole || seedData.roles[0];
-  const acquiredSkills = serverState?.profile?.acquiredSkills || [
-    "Synoptic Meteorology",
-    "Cyclone Warning Protocol",
-  ];
-  
-  // FIX: Added optional chaining (?.) so it never crashes if currentRole is undefined
-  const metrics = serverState?.metrics || {
-    requiredCount: currentRole?.requiredSkills?.length || 0,
-    acquiredCount: 2,
-    missingCount: 2,
-    readinessScore: 50,
-    acquiredInRole: ["Synoptic Meteorology", "Cyclone Warning Protocol"],
-    missingInRole: ["Satellite Imagery Analysis", "Numerical Weather Prediction"],
-  };
-
-  return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-sky-500 selection:text-white">
-      {/* Live IMD Weather Alert Ticker */}
-      <div className="bg-gradient-to-r from-amber-600 via-orange-600 to-rose-600 text-white px-4 py-2.5 text-xs font-semibold flex items-center justify-center gap-3 shadow-md tracking-wide">
-        <div className="flex items-center gap-1.5 bg-black/20 px-2 py-0.5 rounded uppercase font-bold text-[10px] animate-pulse">
-          <CloudLightning className="w-3.5 h-3.5 text-amber-200" />
-          IMD Live Bulletin
-        </div>
-        <span>
-          ⚠️ Orange Alert: Heavy cyclonic rainfall warning active for North Coastal Tamil Nadu &amp; Puducherry. DWR &amp; QPE refresher modules mandatory.
-        </span>
-      </div>
-
-      {/* Enterprise Executive Header */}
-      <header className="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3.5">
-            <div className="p-2.5 bg-gradient-to-br from-sky-500 to-blue-700 rounded-xl shadow-lg shadow-sky-500/20">
-              <ShieldCheck className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-extrabold tracking-tight text-white">
-                  Capacity Connect
-                </h1>
-                <span className="text-[10px] bg-sky-500/10 border border-sky-500/30 text-sky-400 font-mono px-2 py-0.5 rounded-full uppercase">
-                  SIH26075 • IMD / MoES
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Ministry of Earth Sciences • Digital Competency &amp; Upskilling Portal
-              </p>
-            </div>
-          </div>
-
-          {/* Navigation Tab Switcher */}
-          <div className="flex items-center bg-slate-950 p-1.5 rounded-xl border border-slate-800 shadow-inner">
-            <button
-              onClick={() => setActiveTab("learner")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeTab === "learner"
-                  ? "bg-sky-600 text-white shadow-md shadow-sky-600/30"
-                  : "text-slate-400 hover:text-white hover:bg-slate-900"
-              }`}
-            >
-              <LayoutDashboard className="w-4 h-4" />
-              Learner Upskilling Portal
-            </button>
-            <button
-              onClick={() => setActiveTab("admin")}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                activeTab === "admin"
-                  ? "bg-sky-600 text-white shadow-md shadow-sky-600/30"
-                  : "text-slate-400 hover:text-white hover:bg-slate-900"
-              }`}
-            >
-              <BarChart2 className="w-4 h-4" />
-              Training Director Analytics
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Container */}
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {activeTab === "learner" ? (
-          <div className="space-y-8 animate-in fade-in duration-300">
-            {/* Hero Banner Section */}
-            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-900 to-sky-950 border border-slate-800 p-8 shadow-xl">
-              <div className="absolute top-0 right-0 -mt-8 -mr-8 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="relative z-10 max-w-3xl">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-semibold mb-4">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Next-Gen Meteorological Workforce Readiness
-                </div>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                  Empowering IMD Personnel with Precision Competencies
-                </h2>
-                <p className="text-slate-400 text-sm sm:text-base mt-3 leading-relaxed">
-                  Select your operational designation, bridge critical technical gaps through interactive modules, and achieve certified readiness for weather forecasting and disaster mitigation.
-                </p>
-              </div>
-            </div>
-
-            {/* Module 1: Sanjana's Component (Role Onboarding) */}
-            <div className="bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-800/80 p-6 shadow-xl">
-              <RoleOnboarding
-                roles={seedData.roles}
-                selectedRole={currentRole}
-                onSelectRole={handleSelectRole}
-              />
-            </div>
-
-            {/* Module 3: Tharun's Skill-Gap Engine */}
-            <div className="bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-800/80 p-6 shadow-xl">
-              <SkillGapDashboard
-                profile={serverState?.profile}
-                selectedRole={currentRole}
-                metrics={metrics}
-                recommendedCourses={serverState?.recommendedCourses}
-                onSimulatePass={handleUnlockSkill}
-                onResetDemo={handleResetDemo}
-                isLoading={isLoading}
-              />
-            </div>
-
-            {/* Module 2: Nithyasri's Component (Courses & Assessments) */}
-            <div className="bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-800/80 p-6 shadow-xl">
-              <CourseAndQuiz
-                courses={seedData.courses}
-                acquiredSkills={acquiredSkills}
-                onPassQuiz={handleUnlockSkill}
-              />
-            </div>
-          </div>
-        ) : (
-          /* Module 4: Admin Analytics Dashboard */
-          <div className="bg-slate-900/60 backdrop-blur-md rounded-2xl border border-slate-800/80 p-6 shadow-xl animate-in fade-in duration-300">
-            <AdminAnalytics fallbackData={seedData.adminAnalytics} />
-          </div>
-        )}
-      </main>
-
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-8 mt-16 text-center text-xs text-slate-500">
-        <p>Capacity Connect • India Meteorological Department (IMD) • Smart India Hackathon 2026</p>
-        <p className="mt-1 text-slate-600">Built with Next.js 14 App Router, Tailwind CSS, &amp; Recharts.</p>
-      </footer>
-    </div>
-  );
+  return <div className={`min-h-screen transition-colors ${isDark}`}><header className={`sticky top-0 z-40 border-b ${darkMode ? "border-zinc-800 bg-zinc-950/90" : "border-amber-200 bg-amber-50/90"} backdrop-blur`}><div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-4 sm:px-6"><button onClick={() => setAccessRole(null)} className="flex items-center gap-2 text-left"><ShieldCheck className="h-6 w-6 text-amber-400" /><span><b>Capacity Connect</b><small className="ml-2 hidden text-xs text-zinc-500 sm:inline">{accessRole.title}</small></span></button><button onClick={() => setDarkMode((value) => !value)} className={`rounded-lg border px-3 py-2 text-xs font-bold ${darkMode ? "border-zinc-700 text-amber-300" : "border-amber-300 text-amber-800"}`}>{darkMode ? <span className="flex gap-1"><Sun className="h-4 w-4" /> Light Mode</span> : <span className="flex gap-1"><Moon className="h-4 w-4" /> Dark Mode</span>}</button></div></header><main className="mx-auto max-w-7xl space-y-8 px-4 py-8 sm:px-6">{error && <p className="rounded-lg bg-rose-500/10 p-3 text-sm text-rose-300">{error}</p>}{accessRole.id === "director" ? <AdminAnalytics fallbackData={{}} /> : accessRole.id === "trainer" ? <TrainerView courses={courses} /> : <>{profile ? <><section className="rounded-2xl border border-amber-400/20 bg-gradient-to-r from-zinc-900 to-amber-950/40 p-6"><p className="text-xs font-bold tracking-[0.16em] text-amber-400">LEARNER READINESS</p><h1 className="mt-2 text-3xl font-bold">{profile.activeRole.title}</h1><p className="mt-2 text-zinc-400">{profile.user.name} · {profile.activeRole.region}</p><p className="mt-5 text-4xl font-bold text-amber-300"><CountUp value={profile.competency.completionPercent} suffix="%" /></p></section><RoleOnboarding roles={profile.roles} selectedRole={profile.activeRole} onSelectRole={(role) => updateCompetency({ action: "switch-role", roleId: role.id })} isLoading={loading} /><CourseAndQuiz courses={courses} acquiredSkillIds={profile.competency.acquiredSkills.map((skill) => skill.id)} onPassQuiz={(skillId) => updateCompetency({ action: "unlock-skill", skillId })} /></> : <p className="py-16 text-center text-zinc-400">Loading learner workspace…</p>}</>}</main></div>;
 }
+
+function TrainerView({ courses }) { return <section className="space-y-6"><div><p className="text-xs font-bold tracking-[0.18em] text-amber-400">MENTOR CONSOLE</p><h1 className="mt-2 text-3xl font-bold">Trainer matching &amp; institutional archive</h1></div><div className="grid gap-4 md:grid-cols-2">{courses.map((course) => <SpotlightCard key={course.id} className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6"><Users className="h-6 w-6 text-amber-400" /><h2 className="mt-5 text-xl font-semibold">{course.title}</h2><p className="mt-2 text-sm text-zinc-400">Archive-ready lesson plan · {course.duration}</p><button className="mt-5 rounded-lg border border-amber-400/40 px-3 py-2 text-xs font-bold text-amber-300">Review matching cohort</button></SpotlightCard>)}</div></section>; }

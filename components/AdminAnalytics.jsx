@@ -25,9 +25,10 @@ import {
   Award,
   TrendingUp,
 } from "lucide-react";
+import { CountUp } from "./ReactBits";
 
 export default function AdminAnalytics({ fallbackData }) {
-  const [region, setRegion] = useState("ALL");
+  const [region, setRegion] = useState("All India");
   const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -37,9 +38,7 @@ export default function AdminAnalytics({ fallbackData }) {
       try {
         const res = await fetch(`/api/analytics?region=${region}`);
         const json = await res.json();
-        if (json.status === "success") {
-          setAnalytics(json.data);
-        }
+        if (res.ok) setAnalytics(json.data);
       } catch (err) {
         console.error("Failed to fetch analytics:", err);
       } finally {
@@ -100,9 +99,9 @@ export default function AdminAnalytics({ fallbackData }) {
               onChange={(e) => setRegion(e.target.value)}
               className="bg-transparent text-xs font-bold text-slate-200 focus:outline-none cursor-pointer"
             >
-              <option value="ALL" className="bg-slate-900">All India IMD Centres</option>
-              <option value="RMC_CHENNAI" className="bg-slate-900">RMC Chennai (Tamil Nadu)</option>
-              <option value="RMC_DELHI" className="bg-slate-900">RMC New Delhi (HQ)</option>
+              <option value="All India" className="bg-slate-900">All India IMD Centres</option>
+              <option value="RMC Chennai" className="bg-slate-900">RMC Chennai (Tamil Nadu)</option>
+              <option value="RMC New Delhi" className="bg-slate-900">RMC New Delhi (HQ)</option>
             </select>
           </div>
 
@@ -124,7 +123,7 @@ export default function AdminAnalytics({ fallbackData }) {
           </div>
           <div>
             <p className="text-xs text-slate-400 font-medium">Active Personnel</p>
-            <p className="text-2xl font-extrabold text-white">{data.activePersonnel}</p>
+            <p className="text-2xl font-extrabold text-white"><CountUp value={data.activePersonnel} /></p>
           </div>
         </div>
 
@@ -134,7 +133,7 @@ export default function AdminAnalytics({ fallbackData }) {
           </div>
           <div>
             <p className="text-xs text-slate-400 font-medium">Avg. Readiness Index</p>
-            <p className="text-2xl font-extrabold text-white">{data.avgCompetency}%</p>
+            <p className="text-2xl font-extrabold text-white"><CountUp value={data.avgCompetency} decimals={1} suffix="%" /></p>
           </div>
         </div>
 
@@ -144,7 +143,7 @@ export default function AdminAnalytics({ fallbackData }) {
           </div>
           <div>
             <p className="text-xs text-slate-400 font-medium">Certifications Issued</p>
-            <p className="text-2xl font-extrabold text-white">{data.certificationsIssued}</p>
+            <p className="text-2xl font-extrabold text-white"><CountUp value={data.certificationsIssued} /></p>
           </div>
         </div>
 
@@ -224,7 +223,7 @@ export default function AdminAnalytics({ fallbackData }) {
             <TrendingUp className="w-4 h-4 text-emerald-400" />
             6-Month Organizational Readiness &amp; Certification Trajectory
           </h3>
-          <div style={{ width: "100%", height: "260px" }}>
+          <div style={{ width: "100%", height: "288px" }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.monthlyTrend}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />

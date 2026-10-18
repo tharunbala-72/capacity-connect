@@ -1,10 +1,18 @@
-export default function CourseAndQuiz({ courses, acquiredSkills, onPassQuiz }) {
-    return (
-      <div className="p-6 bg-slate-900/40 border border-slate-800 rounded-xl text-center">
-        <h3 className="text-lg font-bold text-slate-200">Module 2: Course &amp; Quiz Portal</h3>
-        <p className="text-xs text-slate-400 mt-1">
-          (Nithyasri&apos;s component placeholder — waiting for teammate code submission)
-        </p>
-      </div>
-    );
+"use client";
+
+import { useState } from "react";
+import { BookOpen, CheckCircle2, ExternalLink, Play, X } from "lucide-react";
+import { SpotlightCard } from "./ReactBits";
+
+export default function CourseAndQuiz({ courses, acquiredSkillIds, onPassQuiz }) {
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [answers, setAnswers] = useState({});
+  const [result, setResult] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+  async function submitQuiz() {
+    setSubmitting(true); setResult(null);
+    try { const response = await fetch("/api/assessment", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ courseId: selectedCourse.id, answers: selectedCourse.questions.map((question) => ({ questionId: question.id, optionIndex: answers[question.id] })) }) }); const payload = await response.json(); setResult(payload); if (payload.passed) onPassQuiz(payload.unlockedSkillId); } finally { setSubmitting(false); }
   }
+  return <section><div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p className="text-xs font-bold tracking-[0.18em] text-amber-400">LEARNING STUDIO • 02</p><h2 className="mt-2 text-2xl font-bold text-white">Courses &amp; assessed competency</h2></div><button onClick={() => setShowPreview(true)} className="flex items-center gap-2 self-start rounded-lg border border-amber-400/40 px-3 py-2 text-xs font-bold text-amber-300 hover:bg-amber-400/10"><ExternalLink className="h-4 w-4" /> Preview Nithyasri&apos;s page</button></div><div className="mt-6 grid gap-4 md:grid-cols-2">{courses.map((course) => { const complete = acquiredSkillIds.includes(course.skillId); return <SpotlightCard key={course.id} className="rounded-2xl border border-zinc-800 bg-zinc-950"><div className="p-5"><BookOpen className="h-6 w-6 text-amber-400" /><h3 className="mt-4 text-lg font-semibold text-white">{course.title}</h3><p className="mt-1 text-sm text-zinc-400">{course.duration} · {course.questions.length} MCQs</p><div className="mt-5 flex items-center justify-between">{complete ? <span className="flex items-center gap-1 text-xs font-semibold text-emerald-400"><CheckCircle2 className="h-4 w-4" /> Competency unlocked</span> : <span className="text-xs text-zinc-500">Passing score: 66%</span>}<button onClick={() => { setSelectedCourse(course); setAnswers({}); setResult(null); }} className="flex items-center gap-1 rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-zinc-950 hover:bg-amber-300"><Play className="h-3.5 w-3.5" /> Start</button></div></div></SpotlightCard>; })}</div>{selectedCourse && <div className="fixed inset-0 z-[70] overflow-y-auto bg-black/75 p-4 backdrop-blur-sm"><div className="mx-auto my-8 max-w-2xl rounded-2xl border border-amber-400/30 bg-zinc-950 p-6"><div className="flex items-start justify-between"><div><p className="text-xs font-bold tracking-[0.15em] text-amber-400">ASSESSMENT</p><h3 className="mt-1 text-xl font-bold text-white">{selectedCourse.title}</h3></div><button onClick={() => setSelectedCourse(null)} className="p-2 text-zinc-400"><X /></button></div><div className="mt-6 space-y-6">{selectedCourse.questions.map((question, index) => <fieldset key={question.id}><legend className="text-sm font-medium text-zinc-100">{index + 1}. {question.prompt}</legend><div className="mt-3 grid gap-2">{question.options.map((option, optionIndex) => <label key={option} className={`cursor-pointer rounded-lg border p-3 text-sm ${answers[question.id] === optionIndex ? "border-amber-400 bg-amber-400/10 text-amber-100" : "border-zinc-800 text-zinc-300"}`}><input className="sr-only" type="radio" name={question.id} checked={answers[question.id] === optionIndex} onChange={() => setAnswers((current) => ({ ...current, [question.id]: optionIndex }))} />{option}</label>)}</div></fieldset>)}</div>{result && <p className={`mt-6 rounded-lg p-3 text-sm ${result.passed ? "bg-emerald-400/10 text-emerald-300" : "bg-rose-400/10 text-rose-200"}`}>{result.passed ? `Passed: ${result.scorePercent}%. Competency unlocked.` : `Score: ${result.scorePercent}%. You need 66% to unlock this competency.`}</p>}<button disabled={submitting || Object.keys(answers).length !== selectedCourse.questions.length} onClick={submitQuiz} className="mt-6 w-full rounded-xl bg-amber-400 px-4 py-3 text-sm font-bold text-zinc-950 disabled:opacity-50">{submitting ? "Grading securely…" : "Submit assessment"}</button></div></div>}{showPreview && <div className="fixed inset-0 z-[80] bg-black/80 p-4"><div className="mx-auto flex h-full max-w-6xl flex-col rounded-2xl bg-white p-3"><div className="flex items-center justify-between px-2 pb-3"><p className="text-sm font-bold text-zinc-900">Nithyasri&apos;s static course preview</p><button onClick={() => setShowPreview(false)} className="rounded p-2 text-zinc-600 hover:bg-zinc-100"><X /></button></div><iframe className="min-h-0 flex-1 rounded-lg border" title="Course catalogue preview" src="/courses.html" /></div></div>}</section>;
+}
