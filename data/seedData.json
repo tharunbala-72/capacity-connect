@@ -75,6 +75,62 @@
         { "id": "q-nowcast-2", "prompt": "Which observation is most valuable for tracking a fast-moving thunderstorm?", "options": ["Weather radar", "Annual climate normal", "Ocean salinity chart", "Historical almanac"], "answer": 0 },
         { "id": "q-nowcast-3", "prompt": "What should a nowcast communicate clearly?", "options": ["Location, timing and impact", "Only station elevation", "Only annual rainfall", "Only model version"], "answer": 0 }
       ] 
+    },
+    {
+      "id": "course-synoptic-meteorology",
+      "title": "Weather Forecasting & Synoptic Meteorology",
+      "skill": "Synoptic Meteorology",
+      "skillId": "synoptic-analysis",
+      "duration": "3 Weeks",
+      "difficulty": "Intermediate",
+      "description": "Interpret charts, pressure systems, and forecast guidance for daily operations.",
+      "questions": [
+        { "id": "q-synoptic-1", "prompt": "Which chart is central to synoptic weather analysis?", "options": ["Surface pressure chart", "Soil map", "Land-use map", "Astronomical chart"], "answer": 0 },
+        { "id": "q-synoptic-2", "prompt": "A closely packed isobar pattern usually indicates?", "options": ["Light winds", "Strong pressure gradient", "No precipitation", "Clear skies"], "answer": 1 },
+        { "id": "q-synoptic-3", "prompt": "Which observation improves a regional forecast?", "options": ["Upper-air sounding", "Annual census", "Road map", "Tide table only"], "answer": 0 }
+      ]
+    },
+    {
+      "id": "course-meteorological-data-analysis",
+      "title": "Data Analysis for Meteorology",
+      "skill": "Data Quality Control",
+      "skillId": "data-quality-control",
+      "duration": "4 Weeks",
+      "difficulty": "Intermediate",
+      "description": "Quality-control observations and work with Python and NetCDF datasets.",
+      "questions": [
+        { "id": "q-data-1", "prompt": "What is a key first step in quality control?", "options": ["Check for missing values", "Delete every outlier", "Publish raw data", "Ignore metadata"], "answer": 0 },
+        { "id": "q-data-2", "prompt": "NetCDF is commonly used for?", "options": ["Multidimensional scientific data", "Word processing", "Video editing", "Email delivery"], "answer": 0 },
+        { "id": "q-data-3", "prompt": "Why retain metadata with observations?", "options": ["For traceability", "To increase file colour", "To reduce variables", "To hide sources"], "answer": 0 }
+      ]
+    },
+    {
+      "id": "course-hydrology-flood-forecasting",
+      "title": "Hydrology & Flood Forecasting",
+      "skill": "Flood Forecasting",
+      "skillId": "flood-forecasting",
+      "duration": "4 Weeks",
+      "difficulty": "Advanced",
+      "description": "Connect rainfall observations, catchment response, and impact-based flood guidance.",
+      "questions": [
+        { "id": "q-hydro-1", "prompt": "Which input is essential to a flood forecast?", "options": ["Rainfall estimate", "Airport code", "Sunrise time", "Cloud colour"], "answer": 0 },
+        { "id": "q-hydro-2", "prompt": "Catchment saturation generally makes runoff?", "options": ["Increase", "Disappear", "Unrelated", "Freeze"], "answer": 0 },
+        { "id": "q-hydro-3", "prompt": "Flood advisories should communicate?", "options": ["Location and likely impact", "Only a model name", "Only station number", "Only historic rainfall"], "answer": 0 }
+      ]
+    },
+    {
+      "id": "course-cyclone-tracking",
+      "title": "Cyclone Tracking & Storm Surge",
+      "skill": "Operational Nowcasting",
+      "skillId": "nowcasting",
+      "duration": "3 Weeks",
+      "difficulty": "Advanced",
+      "description": "Track tropical systems and issue timely coastal impact guidance through RSMC workflows.",
+      "questions": [
+        { "id": "q-cyclone-1", "prompt": "Which centre issues tropical cyclone advisories for the region?", "options": ["RSMC", "Library", "Railway board", "Census office"], "answer": 0 },
+        { "id": "q-cyclone-2", "prompt": "Storm surge risk is highest near?", "options": ["Low-lying coast", "Mountain summit", "Desert interior", "Upper-air station only"], "answer": 0 },
+        { "id": "q-cyclone-3", "prompt": "Satellite imagery helps cyclone operations by?", "options": ["Tracking cloud structure", "Measuring road traffic", "Counting buildings", "Replacing all observations"], "answer": 0 }
+      ]
     }
   ],
   "analytics": {

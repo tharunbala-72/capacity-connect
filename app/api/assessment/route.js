@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import seedData from "../../../data/seedData.json";
+import { state } from "@/lib/serverState";
 
 const PASS_PERCENT = 66;
 
@@ -20,5 +21,6 @@ export async function POST(request) {
   const correctAnswers = course.questions.filter((question) => answerByQuestion.get(question.id) === (question.correctOption ?? question.answer)).length;
   const scorePercent = Math.round((correctAnswers / course.questions.length) * 100);
   const passed = scorePercent >= PASS_PERCENT;
+  if (passed) { const current = state(); if (!current.unlockedSkillIds.includes(course.skillId)) current.unlockedSkillIds.push(course.skillId); if (!current.completedCourseIds.includes(course.id)) current.completedCourseIds.push(course.id); current.auditLog.unshift({ action: "complete-assessment", courseId: course.id, at: new Date().toISOString() }); }
   return NextResponse.json({ courseId: course.id, correctAnswers, totalQuestions: course.questions.length, scorePercent, passed, unlockedSkillId: passed ? course.skillId : null });
 }

@@ -1,35 +1,15 @@
 import { NextResponse } from "next/server";
-import seedData from "../../../data/seedData.json";
+import seedData from "@/data/seedData.json";
+import { profileFromState, resetState, state } from "@/lib/serverState";
 
-const userState = { activeRoleId: seedData.user.activeRoleId, unlockedSkillIds: new Set(seedData.user.unlockedSkillIds) };
-const auditLog = [];
-
-function buildProfile() {
-  const activeRole = seedData.roles.find((role) => role.id === userState.activeRoleId);
-  const requiredSkills = activeRole.requiredSkillIds.map((id) => seedData.skills.find((skill) => skill.id === id));
-  const acquiredSkills = requiredSkills.filter((skill) => userState.unlockedSkillIds.has(skill.id));
-  const gapSkills = requiredSkills.filter((skill) => !userState.unlockedSkillIds.has(skill.id));
-  return { user: { id: seedData.user.id, name: seedData.user.name }, activeRole, roles: seedData.roles, competency: { requiredSkills, acquiredSkills, gapSkills, completionPercent: Math.round((acquiredSkills.length / requiredSkills.length) * 100) }, auditLog };
-}
-
-export function GET() { return NextResponse.json(buildProfile()); }
-
+export const dynamic = "force-dynamic";
+export function GET() { return NextResponse.json(profileFromState()); }
 export async function POST(request) {
-  let body;
-  try { body = await request.json(); } catch { return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 }); }
-  if (body.action === "switch-role") {
-    const role = seedData.roles.find((item) => item.id === body.roleId);
-    if (!role) return NextResponse.json({ error: "Unknown roleId." }, { status: 400 });
-    userState.activeRoleId = role.id;
-    auditLog.unshift({ action: "switch-role", roleId: role.id, at: new Date().toISOString() });
-    return NextResponse.json(buildProfile());
-  }
-  if (body.action === "unlock-skill") {
-    const skill = seedData.skills.find((item) => item.id === body.skillId);
-    if (!skill) return NextResponse.json({ error: "Unknown skillId." }, { status: 400 });
-    userState.unlockedSkillIds.add(skill.id);
-    auditLog.unshift({ action: "unlock-skill", skillId: skill.id, at: new Date().toISOString() });
-    return NextResponse.json(buildProfile());
-  }
-  return NextResponse.json({ error: "action must be either switch-role or unlock-skill." }, { status: 400 });
+  let body; try { body = await request.json(); } catch { return NextResponse.json({ error: "Request body must be valid JSON." }, { status: 400 }); }
+  const current = state();
+  if (body.action === "switch-role") { if (!seedData.roles.some((role) => role.id === body.roleId)) return NextResponse.json({ error: "Unknown roleId." }, { status: 400 }); current.activeRoleId = body.roleId; current.auditLog.unshift({ action: body.action, at: new Date().toISOString() }); }
+  else if (body.action === "unlock-skill") { if (!seedData.skills.some((skill) => skill.id === body.skillId)) return NextResponse.json({ error: "Unknown skillId." }, { status: 400 }); if (!current.unlockedSkillIds.includes(body.skillId)) current.unlockedSkillIds.push(body.skillId); current.auditLog.unshift({ action: body.action, skillId: body.skillId, at: new Date().toISOString() }); }
+  else if (body.action === "reset-progress") { resetState(); return NextResponse.json(profileFromState()); }
+  else return NextResponse.json({ error: "action must be switch-role, unlock-skill, or reset-progress." }, { status: 400 });
+  return NextResponse.json(profileFromState());
 }
