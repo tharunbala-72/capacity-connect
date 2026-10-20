@@ -1,52 +1,107 @@
-# Capacity Connect – IMD Training Portal
+# Capacity Connect — IMD Training & Operational Readiness Portal
 
-A web-based training portal that helps India Meteorological Department (IMD) staff discover job roles, take training courses and test their knowledge with short assessments.
+Capacity Connect is a production-oriented Learning Management System for the India Meteorological Department (IMD), Ministry of Earth Sciences. It combines an automated skill-gap engine, technical learning paths, SME mentorship, and regional capacity telemetry in one role-isolated operational portal.
 
-**Live site:** https://saravanansanjana08-art.github.io/CAPACITY-CONNECT/
+## Project Overview
 
-## Features
+The platform supports workforce readiness throughout IMD operations:
 
-- **Role Onboarding** – Choose a job role from 6 options (Weather Forecaster, Radar Technician, Data Analyst, Hydrologist, Meteorological Researcher, Cyclone Tracking – RSMC).
-- **Courses & Assessment** – Grid of training course cards showing course name, duration and a "Take Assessment" button.
-- **Mini Quiz** – 3-question multiple-choice quiz (options A–D) with a "Submit Quiz" button and instant scoring.
-- **Light / Dark mode** – Shared gold theme across all pages.
+- Enterprise Learning Management System (LMS)
+- Automated Skill-Gap and readiness engine
+- SME mentorship hub
+- Regional telemetry and training-capacity portal
+
+## Key Features & Role-Isolated Architecture
+
+### Trainee / Met Officer Workspace
+
+- Role onboarding for Junior Weather Forecaster, Doppler Radar Technician, Climate Data Analyst, and Hydrologist
+- Automated skill-gap and readiness engine
+- Interactive six-course technical catalog with MCQ certification quizzes
+- SME mentorship request flow with status updates
+- Institutional Knowledge Archive
+
+### SME Mentor Console
+
+- Live cohort readiness tracking
+- Incoming mentorship request review and approval workflow
+- Learner guidance logs and review tools
+
+### Training Director Analytics
+
+- National and regional capacity telemetry for All India, RMC Chennai, RMC New Delhi, RMC Mumbai, and RMC Kolkata
+- Interactive Recharts: Departmental Skill Gaps bar chart and Certification Distribution donut chart
+- Regional division breakdown table
+- CSV export
+
+### Adaptive Day/Night Operations UI
+
+- High-contrast light and dark theme engine
+- Live IMD Severe Weather Alert Ticker
+
+## Tech Stack
+
+- Next.js 14 (App Router)
+- React 18
+- Tailwind CSS
+- Recharts
+- Lucide React
+- Next.js Node.js REST API Routes with server-side state persistence
+
+## Backend API Endpoints
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET / POST /api/competency` | Role selection, competency verification, and skill-gap calculation |
+| `GET / POST /api/assessment` | Course quiz evaluation and automated skill unlocking |
+| `GET / POST /api/mentorship` | Cross-role mentorship request submission and mentor approval sync |
+| `GET / POST /api/analytics` | Real-time regional and departmental telemetry aggregation |
 
 ## Project Structure
 
-```
-├── app/               # Next.js pages
-├── components/        # Reusable components
-├── data/              # Project data
-├── public/
-│   └── courses.html   # Course & Assessment module (Nithyasri)
+```text
+capacity-connect/
+├── app/
+│   ├── api/
+│   │   ├── analytics/route.js
+│   │   ├── assessment/route.js
+│   │   ├── competency/route.js
+│   │   └── mentorship/route.js
+│   ├── globals.css
+│   └── page.js
+├── components/
+│   ├── AdminAnalytics.jsx
+│   ├── CourseAndQuiz.jsx
+│   ├── LearnerMentors.jsx
+│   ├── MentorConsole.jsx
+│   ├── RoleOnboarding.jsx
+│   └── SkillGapDashboard.jsx
+├── data/
+│   └── seedData.json
+├── lib/
+│   └── serverState.js
 └── README.md
 ```
 
 ## Getting Started
 
 ```bash
-git clone https://github.com/tharunbala-72/capacity-connect.git
-cd capacity-connect
 npm install
 npm run dev
+npm run build
 ```
 
-Open http://localhost:3000 in your browser. The courses page is at http://localhost:3000/courses.html
+Open [http://localhost:3000](http://localhost:3000).
 
-## Tech Stack
+### Demo Credentials
 
-Next.js, HTML5, CSS3, JavaScript.
+Use these credentials with any of the Trainee, Mentor, or Training Director workspaces:
 
-## Team & Modules
+- Username: `tharun` (or `tharunbala72@gmail.com`)
+- PIN: `1234`
 
-| Member | Module |
-|--------|--------|
-| Sanjana | Role Onboarding – header, job role cards, role selection |
-| Nithyasri | Course & Assessment – course grid, 3-question quiz, README |
-| Tharun | Backend |
+## Team & Contributors
 
-## Future Improvements
-
-- Save selected roles and quiz scores
-- Filter courses by selected role
-- Certificates on passing assessments
+- **M. Tharun Bala** — Lead Full-Stack Developer: Next.js 14 architecture, role-isolated dashboards, REST APIs, Recharts telemetry, and state sync
+- **Sanjana Saravanan** — Role Onboarding Wireframes & UI Prototyping
+- **Nithyasri Anand** — Course Catalog Structure & IMD Assessment Content

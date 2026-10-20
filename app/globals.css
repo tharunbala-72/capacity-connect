@@ -19,3 +19,4 @@ body { margin: 0; }
 [data-theme="dark"] .border-slate-100, [data-theme="dark"] .border-slate-200 { border-color: #1e293b !important; }
 [data-theme="dark"] input, [data-theme="dark"] select, [data-theme="dark"] textarea { background: #1e293b !important; color: #f8fafc !important; border-color: #334155 !important; }
 [data-theme="dark"] input::placeholder, [data-theme="dark"] textarea::placeholder { color: #64748b !important; }
+[data-theme="dark"] aside button:not(.bg-sky-600):hover { background-color: #1e293b !important; color: #f8fafc !important; }
