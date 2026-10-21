@@ -68,7 +68,7 @@ Use these credentials to explore the **Trainee**, **Mentor** and **Director** vi
 
 ## Links
 
-- Live role onboarding page: https://saravanansanjana08-art.github.io/CAPACITY-CONNECT/
+- Live role onboarding page: https://saravanansanjana08-art.github.io/Capacity-connect-/
 
 ## License
 
